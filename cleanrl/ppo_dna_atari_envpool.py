@@ -195,7 +195,7 @@ class Agent(nn.Module):
         self.critic = layer_init(nn.Linear(512, 1), std=1)
 
     def get_value(self, x):
-        return self.critic(self.network(self.normalize_obs(x))).squeeze(-1)
+        return self.critic(self.network(x)).squeeze(-1)
 
     def get_action(self, x, action=None):
         probs, _ = self.get_action_distribution_and_value(x)
@@ -204,7 +204,7 @@ class Agent(nn.Module):
         return action, probs.log_prob(action), probs.entropy()
 
     def get_action_distribution_and_value(self, x):
-        hidden = self.network(self.normalize_obs(x))
+        hidden = self.network(x)
         logits = self.actor(hidden)
         probs = Categorical(logits=logits)
         value = self.critic(hidden).squeeze(-1)
